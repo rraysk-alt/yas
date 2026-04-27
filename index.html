@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YAS vs RAYAN: Fate Decided</title>
+    <title>YAS vs RAYAN</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0d0d0d;
-            --border-color: #444;
-            --yasmine-blonde: #f7e07a;
-            --rayan-skin: #bfa071;
+            --bg-color: #000000;
+            --yas-blonde: #f7e07a;
             --highlight: #ff0055;
         }
 
@@ -28,244 +26,176 @@
         }
 
         .game-canvas {
-            width: 850px;
-            height: 500px;
-            background: #151515;
-            border: 10px solid var(--border-color);
+            width: 900px;
+            height: 550px;
+            background: #000; /* Matching your image backgrounds */
+            border: 6px solid #222;
             position: relative;
-            image-rendering: pixelated;
         }
 
-        /*=============================================================================
-          CHARACTER SPRITES (How to add images)
-          To make them look like characters:
-          1. Upload your character images to your 'yas' repo as yasmine.png and rayan.png.
-          2. Delete the lines that say "/* REMOVE THIS ... /*" around the 'background-image' properties.
-          =============================================================================*/
+        /* Character Sprites */
         .sprite {
-            width: 128px;
-            height: 256px; /* Larger to show detail */
+            width: 300px; /* Larger for cartoon detail */
+            height: 400px;
             position: absolute;
-            bottom: 40px;
-            image-rendering: pixelated; /* Crucial for cartoon/pixel art */
+            bottom: 20px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: bottom;
         }
 
-        /* YASMINE: Blonde, on left */
-        .sprite.yasmine {
-            left: 100px;
-            /* Placeholder for debugging */ background-color: var(--yasmine-blonde);
-            
-            /* ADD YASMINE'S CARTOON IMAGE HERE:
-            REMOVE THIS LINE /* background-image: url('yasmine.png'); background-size: cover; /* REMOVE THIS LINE */
-        }
-        .sprite.yasmine::after {
-            content: 'YAS';
-            position: absolute;
-            top: -30px;
-            left: 0;
-            font-size: 14px;
-            color: var(--yasmine-blonde);
-            width: 100%; text-align: center;
+        .yasmine {
+            left: 20px;
+            background-image: url('yasmine.png');
         }
 
-        /* RAYAN: Tall, afraid, on right */
-        .sprite.rayan {
-            right: 100px;
-            height: 280px; /* Taller */
-            /* Placeholder for debugging */ background-color: var(--rayan-skin);
-            animation: tremor 0.2s infinite;
-
-            /* ADD RAYAN'S CARTOON IMAGE HERE:
-            REMOVE THIS LINE /* background-image: url('rayan.png'); background-size: cover; /* REMOVE THIS LINE */
-        }
-        .sprite.rayan::after {
-            content: 'RAYAN';
-            position: absolute;
-            top: -30px;
-            left: 0;
-            font-size: 14px;
-            color: #c43232;
-            width: 100%; text-align: center;
+        .rayan {
+            right: 20px;
+            background-image: url('rayan.png');
+            animation: tremor 0.15s infinite;
         }
 
-        /* The Corner */
-        .corner {
-            position: absolute;
-            bottom: 40px;
-            right: 0px;
-            width: 20px;
-            height: 280px;
-            background: #222;
-            border-left: 4px solid var(--border-color);
-        }
-
-        /* The Heart Target */
+        /* The Heart on Rayan's chest */
         .target-heart {
-            font-size: 40px;
-            color: #ff3131;
+            font-size: 50px;
             position: absolute;
-            bottom: 180px; /* Heart level */
-            right: 140px; /* Centered on Rayan */
+            bottom: 220px;
+            right: 140px;
             z-index: 10;
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
         }
 
         /* The Arrow */
         .arrow {
             position: absolute;
-            bottom: 190px;
-            left: 200px; /* From Yas's bow */
-            font-size: 32px;
-            color: white;
-            transform: rotate(-10deg);
+            bottom: 240px;
+            left: 280px; 
+            font-size: 40px;
             display: none;
             z-index: 5;
+            filter: drop-shadow(0 0 5px white);
         }
 
-        /* Dynamic Overlay */
-        .game-over-overlay {
+        /* Start Button with Zoom effect */
+        .btn-start {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--yas-blonde);
+            color: #000;
+            border: 4px solid #fff;
+            padding: 25px 40px;
+            font-family: 'Press+Start+2P', cursive;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 30;
+            animation: buttonPulse 0.8s infinite;
+        }
+
+        @keyframes buttonPulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.15); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Overlay & Final UI */
+        .overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.7);
             display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 20;
+            text-align: center;
         }
 
-        .prompt-msg {
+        .prompt {
             color: var(--highlight);
             font-size: 20px;
             margin-bottom: 30px;
-            line-height: 1.6;
-            animation: textPulse 1s infinite;
         }
 
-        /* NEW: Zooming 'TAKE AIM' Button */
-        .btn-start {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(1);
-            background: var(--yasmine-blonde);
-            color: #000;
-            border: 6px solid #fff;
-            padding: 20px 40px;
-            font-family: 'Press+Start+2P', cursive;
-            font-size: 16px;
-            cursor: pointer;
-            z-index: 25;
-            box-shadow: 10px 10px 0px #000;
-            animation: buttonZoom 1s infinite; /* Stronger pulse */
-        }
-
-        @keyframes buttonZoom {
-            0% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 15px 15px 0px #000; }
-            100% { transform: translate(-50%, -50%) scale(1); }
-        }
-
-        .btn-start:hover {
-            animation: none;
-            transform: translate(-50%, -50%) scale(1.1);
-        }
-
-        /* Standard Controls */
-        .btn-container { display: flex; gap: 20px; }
-        button.btn-stop {
-            padding: 15px 25px;
-            font-family: 'Press+Start+2P', cursive;
-            font-size: 14px;
-            cursor: pointer;
-            border: 4px solid #fff;
+        .btn-stop {
             background: #fff;
-            color: #000;
-        }
-        button.btn-stop:hover {
-            background: var(--highlight);
-            color: #fff;
-            border-color: var(--highlight);
+            padding: 20px;
+            font-family: 'Press+Start+2P', cursive;
+            cursor: pointer;
+            border: none;
         }
 
-        /* Animations */
-        @keyframes tremor { 0%, 100% { transform: translate(1px, 1px); } 50% { transform: translate(-1px, -1px); } }
-        @keyframes textPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-        @keyframes screenShake { 0%, 100% { transform: translate(0, 0); } 20%, 60% { transform: translate(10px, 0); } 40%, 80% { transform: translate(-10px, 0); } }
-        .shattered-msg { color: white; font-size: 16px; }
+        @keyframes tremor {
+            0% { transform: translate(2px, 2px); }
+            50% { transform: translate(-2px, -2px); }
+            100% { transform: translate(2px, -2px); }
+        }
+
+        @keyframes shakeScreen {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(15px, 0); }
+            75% { transform: translate(-15px, 0); }
+        }
     </style>
 </head>
 <body>
 
-    <div class="game-canvas" id="canvas">
+    <div class="game-canvas" id="stage">
         <div class="sprite yasmine"></div>
         <div class="sprite rayan"></div>
-        <div class="corner"></div>
+        
+        <div class="target-heart" id="heart">❤️</div>
+        <div class="arrow" id="arrow">💘</div>
 
-        <div class="target-heart" id="rayan-heart">❤️</div>
-        <div class="arrow" id="projectile">💘</div>
+        <button class="btn-start" id="start-btn" onclick="fire()">YASMINE: TAKE AIM</button>
 
-        <button class="btn-start" id="start-btn" onclick="startTension()">YASMINE: TAKE AIM</button>
-
-        <div class="game-over-overlay" id="overlay">
-            <div class="prompt-msg" id="prompt-text">
-                THE ARROW IS IN MOTION.<br>
-                CLICK TO STOP<br>FROM BREAKING HIS HEART!
-            </div>
-            <div class="btn-container" id="interaction-btns">
-                <button class="btn-stop" id="stop-action" onclick="playerIntervenes()">STOP IT!</button>
-            </div>
+        <div class="overlay" id="overlay">
+            <div class="prompt" id="text">THE ARROW IS FLYING!<br>STOP IT NOW!</div>
+            <button class="btn-stop" id="stop-btn" onclick="stop()">STOP IT!</button>
         </div>
     </div>
 
     <script>
-        let animationInterval;
-        let finalOutcomeTriggered = false;
+        let move;
+        let hit = false;
 
-        function startTension() {
+        function fire() {
             document.getElementById('start-btn').style.display = 'none';
-            const arrow = document.getElementById('projectile');
+            const arrow = document.getElementById('arrow');
             const overlay = document.getElementById('overlay');
             arrow.style.display = 'block';
-
-            let position = 200; // Adjusted starting pos
-            const speed = 1.0; // The slow movement
-            const distanceLimit = 680; // Adjusted for larger sprites
-
             overlay.style.display = 'flex';
 
-            animationInterval = setInterval(() => {
-                position += speed;
-                arrow.style.left = position + 'px';
+            let x = 280;
+            move = setInterval(() => {
+                x += 1.5; // Slow motion speed
+                arrow.style.left = x + 'px';
 
-                if (position >= distanceLimit && !finalOutcomeTriggered) {
-                    clearInterval(animationInterval);
-                    finalizeHeartbreak();
+                if (x >= 700 && !hit) {
+                    clearInterval(move);
+                    gameOver();
                 }
             }, 10);
         }
 
-        function playerIntervenes() {
-            clearInterval(animationInterval);
-            finalOutcomeTriggered = true;
-            const promptText = document.getElementById('prompt-text');
-            const interactionBtns = document.getElementById('interaction-btns');
-            promptText.innerHTML = "INTERVENTION SUCCESS.<br>YASMINE LOWERED THE BOW.";
-            promptText.style.color = "#00ff88";
-            interactionBtns.style.display = 'none';
-            document.getElementById('rayan-heart').innerHTML = '💙';
-            document.querySelector('.sprite.rayan').style.animation = 'none';
+        function stop() {
+            clearInterval(move);
+            hit = true;
+            document.getElementById('text').innerHTML = "SAVED!<br>YASMINE SPARED HIM.";
+            document.getElementById('text').style.color = "#00ff88";
+            document.getElementById('stop-btn').style.display = 'none';
+            document.getElementById('heart').innerHTML = "💙";
+            document.querySelector('.rayan').style.animation = "none";
         }
 
-        function finalizeHeartbreak() {
-            finalOutcomeTriggered = true;
-            const promptText = document.getElementById('prompt-text');
-            const interactionBtns = document.getElementById('interaction-btns');
-            const canvas = document.getElementById('canvas');
-            canvas.style.animation = "screenShake 0.4s ease-out";
-            document.getElementById('rayan-heart').innerHTML = '💔';
-            promptText.innerHTML = "TOO LATE.<br>YASMINE SCORED A CRITICAL HIT.";
-            promptText.style.color = "white";
-            interactionBtns.innerHTML = '<div class="shattered-msg">RAYAN\'S HEART IS SHATTERED.</div>';
+        function gameOver() {
+            hit = true;
+            document.getElementById('stage').style.animation = "shakeScreen 0.3s";
+            document.getElementById('heart').innerHTML = "💔";
+            document.getElementById('text').innerHTML = "TOO LATE!<br>YASMINE BROKE HIS HEART.";
+            document.getElementById('text').style.color = "white";
+            document.getElementById('stop-btn').style.display = 'none';
         }
     </script>
 </body>
