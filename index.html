@@ -9,9 +9,9 @@
         :root {
             --bg-color: #0d0d0d;
             --border-color: #444;
-            --yasmine-color: #f7e07a; /* Blonde */
-            --rayan-color: #bfa071; /* Middle Eastern */
-            --highlight: #ff0055; /* The tension color */
+            --yasmine-blonde: #f7e07a;
+            --rayan-skin: #bfa071;
+            --highlight: #ff0055;
         }
 
         body {
@@ -36,21 +36,27 @@
             image-rendering: pixelated;
         }
 
-        /* Character Sprites (Placeholders) */
+        /*=============================================================================
+          CHARACTER SPRITES (How to add images)
+          To make them look like characters:
+          1. Upload your character images to your 'yas' repo as yasmine.png and rayan.png.
+          2. Delete the lines that say "/* REMOVE THIS ... /*" around the 'background-image' properties.
+          =============================================================================*/
         .sprite {
-            width: 64px;
-            height: 128px;
+            width: 128px;
+            height: 256px; /* Larger to show detail */
             position: absolute;
             bottom: 40px;
-            border: 4px solid white;
+            image-rendering: pixelated; /* Crucial for cartoon/pixel art */
         }
 
-        /* YASMINE */
+        /* YASMINE: Blonde, on left */
         .sprite.yasmine {
-            left: 50px;
-            background-color: var(--yasmine-color);
-            /* Visual hint for the prompt details */
-            box-shadow: 0 -20px 0 #f0c929; /* High blonde hair */
+            left: 100px;
+            /* Placeholder for debugging */ background-color: var(--yasmine-blonde);
+            
+            /* ADD YASMINE'S CARTOON IMAGE HERE:
+            REMOVE THIS LINE /* background-image: url('yasmine.png'); background-size: cover; /* REMOVE THIS LINE */
         }
         .sprite.yasmine::after {
             content: 'YAS';
@@ -58,16 +64,19 @@
             top: -30px;
             left: 0;
             font-size: 14px;
-            color: var(--yasmine-color);
+            color: var(--yasmine-blonde);
+            width: 100%; text-align: center;
         }
 
-        /* RAYAN */
+        /* RAYAN: Tall, afraid, on right */
         .sprite.rayan {
-            right: 50px;
-            height: 140px; /* Taller */
-            background-color: var(--rayan-color);
-            border-color: #c43232; /* Afraid border */
+            right: 100px;
+            height: 280px; /* Taller */
+            /* Placeholder for debugging */ background-color: var(--rayan-skin);
             animation: tremor 0.2s infinite;
+
+            /* ADD RAYAN'S CARTOON IMAGE HERE:
+            REMOVE THIS LINE /* background-image: url('rayan.png'); background-size: cover; /* REMOVE THIS LINE */
         }
         .sprite.rayan::after {
             content: 'RAYAN';
@@ -76,6 +85,7 @@
             left: 0;
             font-size: 14px;
             color: #c43232;
+            width: 100%; text-align: center;
         }
 
         /* The Corner */
@@ -84,34 +94,34 @@
             bottom: 40px;
             right: 0px;
             width: 20px;
-            height: 140px;
+            height: 280px;
             background: #222;
             border-left: 4px solid var(--border-color);
         }
 
-        /* The Heart to Break */
+        /* The Heart Target */
         .target-heart {
-            font-size: 30px;
+            font-size: 40px;
             color: #ff3131;
             position: absolute;
-            bottom: 110px; /* At chest level */
-            right: 64px; /* Centered on Rayan */
+            bottom: 180px; /* Heart level */
+            right: 140px; /* Centered on Rayan */
             z-index: 10;
         }
 
-        /* The Arrow and Animation */
+        /* The Arrow */
         .arrow {
             position: absolute;
-            bottom: 120px;
-            left: 110px; /* Starting at Yasmine's bow */
-            font-size: 24px;
+            bottom: 190px;
+            left: 200px; /* From Yas's bow */
+            font-size: 32px;
             color: white;
             transform: rotate(-10deg);
-            display: none; /* Hidden until triggered */
+            display: none;
             z-index: 5;
         }
 
-        /* Dynamic Prompt / Instructions */
+        /* Dynamic Overlay */
         .game-over-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -128,67 +138,60 @@
             font-size: 20px;
             margin-bottom: 30px;
             line-height: 1.6;
-            animation: pulse 1s infinite;
+            animation: textPulse 1s infinite;
         }
 
-        /* Buttons */
-        .btn-container {
-            display: flex;
-            gap: 20px;
+        /* NEW: Zooming 'TAKE AIM' Button */
+        .btn-start {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            background: var(--yasmine-blonde);
+            color: #000;
+            border: 6px solid #fff;
+            padding: 20px 40px;
+            font-family: 'Press+Start+2P', cursive;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 25;
+            box-shadow: 10px 10px 0px #000;
+            animation: buttonZoom 1s infinite; /* Stronger pulse */
         }
 
-        button {
+        @keyframes buttonZoom {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 15px 15px 0px #000; }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .btn-start:hover {
+            animation: none;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        /* Standard Controls */
+        .btn-container { display: flex; gap: 20px; }
+        button.btn-stop {
             padding: 15px 25px;
             font-family: 'Press+Start+2P', cursive;
             font-size: 14px;
             cursor: pointer;
             border: 4px solid #fff;
-            transition: 0.1s;
-        }
-
-        .btn-stop {
             background: #fff;
             color: #000;
         }
-
-        .btn-stop:hover {
+        button.btn-stop:hover {
             background: var(--highlight);
             color: #fff;
             border-color: var(--highlight);
         }
 
-        .btn-start {
-            margin-top: 20px;
-            background: #000;
-            color: #fff;
-            border-color: var(--yasmine-color);
-        }
-
-        /* Specific Animations */
-        @keyframes tremor {
-            0% { transform: translate(1px, 1px); }
-            50% { transform: translate(-1px, -1px); }
-            100% { transform: translate(1px, -1px); }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.7; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes screenShake {
-            0%, 100% { transform: translate(0, 0); }
-            20% { transform: translate(10px, 0); }
-            40% { transform: translate(-10px, 0); }
-            60% { transform: translate(10px, 0); }
-            80% { transform: translate(-10px, 0); }
-        }
-
-        .shattered-msg {
-            color: white;
-            font-size: 16px;
-        }
+        /* Animations */
+        @keyframes tremor { 0%, 100% { transform: translate(1px, 1px); } 50% { transform: translate(-1px, -1px); } }
+        @keyframes textPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        @keyframes screenShake { 0%, 100% { transform: translate(0, 0); } 20%, 60% { transform: translate(10px, 0); } 40%, 80% { transform: translate(-10px, 0); } }
+        .shattered-msg { color: white; font-size: 16px; }
     </style>
 </head>
 <body>
@@ -199,7 +202,6 @@
         <div class="corner"></div>
 
         <div class="target-heart" id="rayan-heart">❤️</div>
-
         <div class="arrow" id="projectile">💘</div>
 
         <button class="btn-start" id="start-btn" onclick="startTension()">YASMINE: TAKE AIM</button>
@@ -220,67 +222,47 @@
         let finalOutcomeTriggered = false;
 
         function startTension() {
-            // Hide the setup button
             document.getElementById('start-btn').style.display = 'none';
-
             const arrow = document.getElementById('projectile');
             const overlay = document.getElementById('overlay');
             arrow.style.display = 'block';
 
-            let position = 110; // Start pos
-            const speed = 1.2; // The "slowly" speed
-            const distanceLimit = 730; // Close to Rayan's heart
+            let position = 200; // Adjusted starting pos
+            const speed = 1.0; // The slow movement
+            const distanceLimit = 680; // Adjusted for larger sprites
 
-            // Show the dynamic prompt overlay immediately, but it's passive
             overlay.style.display = 'flex';
 
-            // Start the arrow movement loop
             animationInterval = setInterval(() => {
                 position += speed;
                 arrow.style.left = position + 'px';
 
-                // Check for collision (the 'Game Over' state)
                 if (position >= distanceLimit && !finalOutcomeTriggered) {
                     clearInterval(animationInterval);
                     finalizeHeartbreak();
                 }
-            }, 10); // Check speed (lower is smoother, higher is jumpier)
+            }, 10);
         }
 
-        // SCENARIO 1: The Player clicks "STOP IT!"
         function playerIntervenes() {
-            clearInterval(animationInterval); // Freeze the arrow
+            clearInterval(animationInterval);
             finalOutcomeTriggered = true;
-
             const promptText = document.getElementById('prompt-text');
             const interactionBtns = document.getElementById('interaction-btns');
-
-            // Change the UI
             promptText.innerHTML = "INTERVENTION SUCCESS.<br>YASMINE LOWERED THE BOW.";
-            promptText.style.color = "#00ff88"; // Green for success
-            interactionBtns.style.display = 'none'; // Hide buttons
-
-            // Give Rayan some relief
+            promptText.style.color = "#00ff88";
+            interactionBtns.style.display = 'none';
             document.getElementById('rayan-heart').innerHTML = '💙';
             document.querySelector('.sprite.rayan').style.animation = 'none';
         }
 
-        // SCENARIO 2: The Player is too slow (default Game Over)
         function finalizeHeartbreak() {
             finalOutcomeTriggered = true;
-            
-            const overlay = document.getElementById('overlay');
             const promptText = document.getElementById('prompt-text');
             const interactionBtns = document.getElementById('interaction-btns');
             const canvas = document.getElementById('canvas');
-
-            // Screen Shake Effect
             canvas.style.animation = "screenShake 0.4s ease-out";
-
-            // Update Rayan's Heart to broken
             document.getElementById('rayan-heart').innerHTML = '💔';
-            
-            // Final Message
             promptText.innerHTML = "TOO LATE.<br>YASMINE SCORED A CRITICAL HIT.";
             promptText.style.color = "white";
             interactionBtns.innerHTML = '<div class="shattered-msg">RAYAN\'S HEART IS SHATTERED.</div>';
