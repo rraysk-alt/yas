@@ -25,58 +25,60 @@
             text-transform: uppercase;
         }
 
+        /* Responsive Canvas */
         .game-canvas {
-            width: 900px;
-            height: 550px;
-            background: #000; /* Matching your image backgrounds */
-            border: 6px solid #222;
+            width: 95vw; /* 95% of viewport width */
+            max-width: 900px; /* Max size for laptop */
+            height: 60vh; /* 60% of viewport height */
+            background: #000;
+            border: 4px solid #222;
             position: relative;
+            overflow: hidden;
         }
 
-        /* Character Sprites */
+        /* Responsive Sprites */
         .sprite {
-            width: 300px; /* Larger for cartoon detail */
-            height: 400px;
+            width: 35%; /* Scales based on screen width */
+            height: 80%;
             position: absolute;
-            bottom: 20px;
+            bottom: 5%;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: bottom;
         }
 
         .yasmine {
-            left: 20px;
+            left: 2%;
             background-image: url('yasmine.png');
         }
 
         .rayan {
-            right: 20px;
+            right: 2%;
             background-image: url('rayan.png');
             animation: tremor 0.15s infinite;
         }
 
-        /* The Heart on Rayan's chest */
+        /* Scalable Heart */
         .target-heart {
-            font-size: 50px;
+            font-size: 8vw; /* Scale font with screen size */
+            max-font-size: 50px;
             position: absolute;
-            bottom: 220px;
-            right: 140px;
+            top: 40%;
+            right: 12%;
             z-index: 10;
-            text-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
         }
 
-        /* The Arrow */
+        /* Scalable Arrow */
         .arrow {
             position: absolute;
-            bottom: 240px;
-            left: 280px; 
-            font-size: 40px;
+            top: 42%;
+            left: 25%; 
+            font-size: 6vw;
             display: none;
             z-index: 5;
-            filter: drop-shadow(0 0 5px white);
         }
 
-        /* Start Button with Zoom effect */
+        /* Pulsing Start Button - Responsive Text */
         .btn-start {
             position: absolute;
             top: 50%;
@@ -85,57 +87,69 @@
             background: var(--yas-blonde);
             color: #000;
             border: 4px solid #fff;
-            padding: 25px 40px;
+            padding: 15px 20px;
             font-family: 'Press+Start+2P', cursive;
-            font-size: 18px;
+            font-size: 3vw; /* Scales for phone */
+            min-font-size: 12px;
             cursor: pointer;
             z-index: 30;
             animation: buttonPulse 0.8s infinite;
+            white-space: nowrap;
+        }
+
+        /* Laptop adjustment for font */
+        @media (min-width: 900px) {
+            .btn-start { font-size: 18px; }
+            .target-heart { font-size: 50px; }
+            .arrow { font-size: 40px; }
         }
 
         @keyframes buttonPulse {
             0% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.15); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
             100% { transform: translate(-50%, -50%) scale(1); }
         }
 
-        /* Overlay & Final UI */
+        /* Overlay */
         .overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 20;
             text-align: center;
+            padding: 10px;
         }
 
         .prompt {
             color: var(--highlight);
-            font-size: 20px;
-            margin-bottom: 30px;
+            font-size: 3vw;
+            min-font-size: 10px;
+            margin-bottom: 20px;
         }
 
         .btn-stop {
             background: #fff;
-            padding: 20px;
+            padding: 15px;
             font-family: 'Press+Start+2P', cursive;
+            font-size: 12px;
             cursor: pointer;
             border: none;
         }
 
         @keyframes tremor {
-            0% { transform: translate(2px, 2px); }
-            50% { transform: translate(-2px, -2px); }
-            100% { transform: translate(2px, -2px); }
+            0% { transform: translate(1px, 1px); }
+            50% { transform: translate(-1px, -1px); }
+            100% { transform: translate(1px, -1px); }
         }
 
         @keyframes shakeScreen {
             0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(15px, 0); }
-            75% { transform: translate(-15px, 0); }
+            25% { transform: translate(10px, 0); }
+            75% { transform: translate(-10px, 0); }
         }
     </style>
 </head>
@@ -167,16 +181,16 @@
             arrow.style.display = 'block';
             overlay.style.display = 'flex';
 
-            let x = 280;
+            let pos = 25; // Percentage based
             move = setInterval(() => {
-                x += 1.5; // Slow motion speed
-                arrow.style.left = x + 'px';
+                pos += 0.5; // Slow movement
+                arrow.style.left = pos + '%';
 
-                if (x >= 700 && !hit) {
+                if (pos >= 78 && !hit) { // Hits Rayan at 78% of the stage
                     clearInterval(move);
                     gameOver();
                 }
-            }, 10);
+            }, 15);
         }
 
         function stop() {
