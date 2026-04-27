@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yasmine vs Rayan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f0f0f;
+            --yas-color: #ff007f;
+            --rayan-color: #00ccff;
+            --heart-red: #ff3131;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: white;
+            font-family: 'Press+Start+2P', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .game-container {
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            border: 4px solid #333;
+            background: #1a1a1a;
+            position: relative;
+        }
+
+        /* The Header with both names */
+        .battle-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            font-size: 12px;
+        }
+
+        .name-tag {
+            padding: 5px;
+            border-bottom: 4px solid;
+        }
+
+        .yas-tag { border-color: var(--yas-color); color: var(--yas-color); }
+        .rayan-tag { border-color: var(--rayan-color); color: var(--rayan-color); }
+
+        /* The Scene */
+        .stage {
+            height: 150px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .pixel-char {
+            width: 60px;
+            height: 80px;
+            background: #333;
+            border: 3px solid white;
+            position: relative;
+        }
+
+        /* Visual indicator for characters if you don't have images yet */
+        .pixel-char::after {
+            content: '';
+            position: absolute;
+            top: -10px; left: 10px; width: 40px; height: 10px; background: white;
+        }
+
+        .heart-zone {
+            font-size: 50px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s;
+        }
+
+        .heart-zone:active { transform: scale(0.9); }
+
+        #broken-heart { display: none; }
+
+        /* Animation Classes */
+        .shatter {
+            animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .status-msg {
+            margin-top: 30px;
+            font-size: 10px;
+            height: 40px;
+            color: #888;
+        }
+
+        button {
+            background: var(--yas-color);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-family: 'Press+Start+2P', cursive;
+            cursor: pointer;
+            font-size: 10px;
+            margin-top: 20px;
+        }
+
+        .dead { opacity: 0.3; filter: grayscale(1); transition: 2s; }
+    </style>
+</head>
+<body>
+
+    <div class="game-container" id="main-box">
+        <div class="battle-header">
+            <div class="name-tag yas-tag">YASMINE</div>
+            <div>VS</div>
+            <div class="name-tag rayan-tag" id="rayan-name">RAYAN</div>
+        </div>
+
+        <div class="stage">
+            <div class="pixel-char" style="background: var(--yas-color);"></div>
+            
+            <div class="heart-zone" id="heart-container" onclick="handleBreak()">
+                <span id="full-heart">❤️</span>
+                <span id="broken-heart">💔</span>
+            </div>
+
+            <div class="pixel-char" id="rayan-sprite" style="background: var(--rayan-color);"></div>
+        </div>
+
+        <div class="status-msg" id="msg">Yasmine is deciding...</div>
+
+        <button onclick="handleBreak()" id="btn">YASMINE: BREAK HEART</button>
+    </div>
+
+    <script>
+        function handleBreak() {
+            const fullHeart = document.getElementById('full-heart');
+            const brokenHeart = document.getElementById('broken-heart');
+            const rayanSprite = document.getElementById('rayan-sprite');
+            const rayanName = document.getElementById('rayan-name');
+            const msg = document.getElementById('msg');
+            const container = document.getElementById('main-box');
+            const btn = document.getElementById('btn');
+
+            // 1. Change Heart
+            fullHeart.style.display = 'none';
+            brokenHeart.style.display = 'inline-block';
+
+            // 2. Add Screen Shake
+            container.classList.add('shatter');
+
+            // 3. Change Rayan's State
+            rayanSprite.classList.add('dead');
+            rayanName.innerText = "💔 RAYAN";
+            rayanName.style.color = "#555";
+
+            // 4. Update Final Message
+            msg.innerHTML = "CRITICAL HIT!<br>Yasmine broke Rayan's heart.";
+            msg.style.color = "white";
+
+            // 5. Remove Button
+            btn.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
